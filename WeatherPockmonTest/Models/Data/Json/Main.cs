@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace WeatherPockmonTest.Models.API
+namespace WeatherPockmonTest.Models.Data.Json
 {
     public class Main
     {

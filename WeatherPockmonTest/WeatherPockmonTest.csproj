@@ -125,10 +125,14 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\API\Main.cs" />
-    <Compile Include="Models\API\WeatherDescription.cs" />
-    <Compile Include="Models\API\WeatherResponse.cs" />
-    <Compile Include="Models\Pokemon.cs" />
+    <Compile Include="Models\Data\Json\Main.cs" />
+    <Compile Include="Models\Data\Json\PokemonData.cs" />
+    <Compile Include="Models\Data\Json\PokemonItem.cs" />
+    <Compile Include="Models\Data\Json\PokemonResponse.cs" />
+    <Compile Include="Models\Data\Json\WeatherDescription.cs" />
+    <Compile Include="Models\Data\Json\WeatherResponse.cs" />
+    <Compile Include="Models\Data\PokemonInfo.cs" />
+    <Compile Include="Models\PokemonService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
