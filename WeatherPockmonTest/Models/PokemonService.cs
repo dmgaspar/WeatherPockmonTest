@@ -16,87 +16,82 @@ namespace WeatherPockmonTest.Models
         private string lastPockemonUsed = string.Empty;
 
         private readonly string appIdNumber = "a8bb6de7c0b7852044690af83e8537b0";
-        public async Task<PokemonInfo> City(string city)
+        public async Task<PokemonInfo> LookUpPokemon(string city)
         {
-            city = "Brasilia";
 
-            PokemonInfo pokemonCityWeather = new PokemonInfo();
+            PokemonInfo pokemonInfo = new PokemonInfo();
 
-            await GetCityWeatherAsync(city, pokemonCityWeather);
+            pokemonInfo.LookUpCity = city;
 
-            //string pockemonType = GetThePockemonType(cityWeather);
+            await SetTemperatureAndStatusAsync(city, pokemonInfo);
 
-            await GetPokemonAsync("bug", pokemonCityWeather);
+            SetPokemonType(pokemonInfo);
 
-            return pokemonCityWeather;
+            await SetPokemonAsync( pokemonInfo);
+
+            return pokemonInfo;
 
         }
 
-
-
-        private string GetThePockemonType(PokemonInfo cityWeather)
+        private string SetPokemonType(PokemonInfo pokemonInfo)
         {
-            float temperature = float.Parse(cityWeather.CityTemperature);
-            String pockemonType = string.Empty;
+            float temperature = float.Parse(pokemonInfo.CityTemperature);
 
-            if (cityWeather.CityStatus == "Rain")
+
+            if (pokemonInfo.CityStatus == "Rain")
             {
-                pockemonType = "electric";
+                pokemonInfo.Type = "electric";
             }
             else if (temperature < 5)
             {
-                pockemonType = "ice";
+                pokemonInfo.Type = "ice";
             }
             else if (temperature >= 5 && temperature < 10)
             {
-                pockemonType = "water";
+                pokemonInfo.Type = "water";
             }
             else if (temperature >= 12 && temperature < 15)
             {
-                pockemonType = "grass";
+                pokemonInfo.Type = "grass";
             }
             else if (temperature >= 15 && temperature <= 21)
             {
-                pockemonType = "ground";
+                pokemonInfo.Type = "ground";
             }
             else if (temperature >= 23 && temperature <= 27)
             {
-                pockemonType = "bug";
+                pokemonInfo.Type = "bug";
             }
             else if (temperature >= 27 && temperature <= 33)
             {
-                pockemonType = "rock";
+                pokemonInfo.Type = "rock";
             }
             else if (temperature > 33)
             {
-                pockemonType = "fire";
+                pokemonInfo.Type = "fire";
             }
             else
             {
-                pockemonType = "normal";
+                pokemonInfo.Type = "normal";
             }
-            return pockemonType;
+            return pokemonInfo.Type;
         }
 
-        private async Task GetCityWeatherAsync(string city, PokemonInfo cityWeather)
+        private async Task SetTemperatureAndStatusAsync(PokemonInfo pokmonInfo)
         {
-
-
             using (var client = new HttpClient())
             {
                 try
                 {
                     client.BaseAddress = new Uri("http://api.openweathermap.org");
-                    var response = await client.GetAsync($"/data/2.5/weather?q={city}&appid={appIdNumber}&units=metric");
+                    var response = await client.GetAsync($"/data/2.5/weather?q={pokmonInfo.LookUpCity}&appid={appIdNumber}&units=metric");
                     response.EnsureSuccessStatusCode();
-
 
                     var stringResult = await response.Content.ReadAsStringAsync();
                     var rawWeather = JsonConvert.DeserializeObject<WeatherResponse>(stringResult);
 
-                    cityWeather.CityTemperature = rawWeather.Main.Temp;
-                    cityWeather.CityStatus = string.Join(",", rawWeather.Weather.Select(x => x.Main));
-
+                    pokmonInfo.CityTemperature = rawWeather.Main.Temp;
+                    pokmonInfo.CityStatus = string.Join(",", rawWeather.Weather.Select(x => x.Main));
 
                 }
                 catch (HttpRequestException httpRequestException)
@@ -108,19 +103,19 @@ namespace WeatherPockmonTest.Models
             }
         }
 
-        private async Task GetPokemonAsync(string pockemonType, PokemonInfo pokemonCityWeather)
+        private async Task SetPokemonAsync(PokemonInfo pokemonInfo)
         {
             using (var client = new HttpClient())
             {
                 try
                 {
                     client.BaseAddress = new Uri("https://pokeapi.co");
-                    var response = await client.GetAsync($"/api/v2/type/{pockemonType}");
+                    var response = await client.GetAsync($"/api/v2/type/{pokemonInfo.Type}");
                     response.EnsureSuccessStatusCode();
                     var stringResult = await response.Content.ReadAsStringAsync();
                     var rawPokemon = JsonConvert.DeserializeObject<PokemonResponse>(stringResult);
 
-                    GetPokemonName(rawPokemon, pokemonCityWeather);
+                    SetPokemonName(rawPokemon, pokemonInfo);
 
                     //cityWeather.Status = string.Join(",", rawWeather.Weather.Select(x => x.Main));
                 }
@@ -133,7 +128,7 @@ namespace WeatherPockmonTest.Models
             }
         }
 
-        private void GetPokemonName(PokemonResponse rawPokemon, PokemonInfo pokemonCityWeather)
+        private void SetPokemonName(PokemonResponse rawPokemon, PokemonInfo pokemonInfo)
         {
             int count = rawPokemon.pokemon.Count();
             Random rnd = new Random();
@@ -145,8 +140,8 @@ namespace WeatherPockmonTest.Models
                 var pokemon = rawPokemon.pokemon.ElementAt(index);
                 if (pokemon.Pokemon.Name != lastPockemonUsed)
                 {
-                    pokemonCityWeather.Name = pokemon.Pokemon.Name;
-                    pokemonCityWeather.URL = pokemon.Pokemon.URL;
+                    pokemonInfo.Name = pokemon.Pokemon.Name;
+                    pokemonInfo.URL = pokemon.Pokemon.URL;
                     lastPockemonUsed = pokemon.Pokemon.Name;
                     next = false;
                 }

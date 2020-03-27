@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Threading.Tasks;
+using WeatherPockmonTest.Models;
 
 namespace WeatherPockmonTest.Controllers
 {
@@ -13,16 +15,24 @@ namespace WeatherPockmonTest.Controllers
             return View();
         }
 
+        [HttpPost]
+        public async Task<ActionResult> LookUpPokemon(PokemonInfo pokemonInfo)
+        {
+            var pokemonService = new PokemonService();
+            var pokemonResult =  await pokemonService.LookUpPokemon(pokemonInfo.LookUpCity);
+            return View(pokemonResult);
+        }
+
         public ActionResult About()
         {
-            ViewBag.Message = "Your application description page.";
+            ViewBag.Message = "Pokémon Challenge for Developers";
 
             return View();
         }
 
         public ActionResult Contact()
         {
-            ViewBag.Message = "Your contact page.";
+            ViewBag.Message = "Dennis Martins Gaspar";
 
             return View();
         }
