@@ -12,15 +12,24 @@ namespace WeatherPockmonTest.Controllers
     {
         public ActionResult Index()
         {
-            return View();
+            var pokemonInfo = new PokemonInfo();
+            return View(pokemonInfo);
         }
 
         [HttpPost]
         public async Task<ActionResult> LookUpPokemon(PokemonInfo pokemonInfo)
         {
-            var pokemonService = new PokemonService();
-            var pokemonResult =  await pokemonService.LookUpPokemon(pokemonInfo.LookUpCity);
-            return View(pokemonResult);
+            var pokemonResult = new PokemonInfo();
+            if (pokemonInfo != null && pokemonInfo.LookUpCity != null)
+            {
+                var pokemonService = new PokemonService();
+                pokemonResult = await pokemonService.LookUpPokemon(pokemonInfo.LookUpCity);
+                return View(pokemonResult);
+            }
+            else 
+            {
+                return View(pokemonResult);
+            }
         }
 
         public ActionResult About()

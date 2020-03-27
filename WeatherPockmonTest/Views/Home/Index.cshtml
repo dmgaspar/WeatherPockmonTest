@@ -6,16 +6,20 @@
 
     <div class="jumbotron">
         <h1>Pokemon</h1>
-        <p class="lead">Enter with a city name and know what pockemon lives there:</p>
+        <p class="lead">Enter the name of the city and find out which pokemon lives there:</p>
         <div>
             @using (Html.BeginForm("LookupPokemon", "Home", FormMethod.Post))
             {
+
                 <input id="LookUpCity" type="text" width="50" name="LookUpCity" />
-                <input type="submit" value="LookUp Pokemon" />
+
+                @Html.ValidationMessageFor(m => m.LookUpCity)
+
+                <input type="submit" value="Lookup Pokemon" onclick="return validateForm()" class="btn btn-primary">
+
+
             }
         </div>
-
-
 
     </div>
 

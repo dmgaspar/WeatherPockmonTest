@@ -23,7 +23,7 @@ namespace WeatherPockmonTest.Models
 
             pokemonInfo.LookUpCity = city;
 
-            await SetTemperatureAndStatusAsync(city, pokemonInfo);
+            await SetTemperatureAndStatusAsync(pokemonInfo);
 
             SetPokemonType(pokemonInfo);
 
@@ -33,12 +33,13 @@ namespace WeatherPockmonTest.Models
 
         }
 
-        private string SetPokemonType(PokemonInfo pokemonInfo)
+        private void SetPokemonType(PokemonInfo pokemonInfo)
         {
             float temperature = float.Parse(pokemonInfo.CityTemperature);
 
+            pokemonInfo.CityStatus = pokemonInfo.CityStatus == "Rain" ? "rainning" : "not rainning";
 
-            if (pokemonInfo.CityStatus == "Rain")
+            if (pokemonInfo.CityStatus == "rainning")
             {
                 pokemonInfo.Type = "electric";
             }
@@ -74,7 +75,6 @@ namespace WeatherPockmonTest.Models
             {
                 pokemonInfo.Type = "normal";
             }
-            return pokemonInfo.Type;
         }
 
         private async Task SetTemperatureAndStatusAsync(PokemonInfo pokmonInfo)
@@ -116,8 +116,6 @@ namespace WeatherPockmonTest.Models
                     var rawPokemon = JsonConvert.DeserializeObject<PokemonResponse>(stringResult);
 
                     SetPokemonName(rawPokemon, pokemonInfo);
-
-                    //cityWeather.Status = string.Join(",", rawWeather.Weather.Select(x => x.Main));
                 }
                 catch (HttpRequestException httpRequestException)
                 {
