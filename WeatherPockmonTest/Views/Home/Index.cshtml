@@ -11,11 +11,11 @@
             @using (Html.BeginForm("LookupPokemon", "Home", FormMethod.Post))
             {
 
-                <input id="LookUpCity" type="text" width="50" name="LookUpCity" />
+                <input id="LookUpCity" type="text" width="70" name="LookUpCity" />
 
                 @Html.ValidationMessageFor(m => m.LookUpCity)
 
-                <input type="submit" value="Lookup Pokemon" onclick="return validateForm()" class="btn btn-primary">
+                <input type="submit" value="Lookup Pokemon" class="btn btn-primary">
 
 
             }

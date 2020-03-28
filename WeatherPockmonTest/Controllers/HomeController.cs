@@ -22,14 +22,19 @@ namespace WeatherPockmonTest.Controllers
             var pokemonResult = new PokemonInfo();
             if (pokemonInfo != null && pokemonInfo.LookUpCity != null)
             {
-                var pokemonService = new PokemonService();
-                pokemonResult = await pokemonService.LookUpPokemon(pokemonInfo.LookUpCity);
-                return View(pokemonResult);
+                try
+                {
+                    var pokemonService = new PokemonService();
+                    pokemonResult = await pokemonService.LookUpPokemon(pokemonInfo.LookUpCity);
+                    return View(pokemonResult);
+
+                }
+                catch(Exception ex)
+                {
+                    return View("Error");
+                }
             }
-            else 
-            {
-                return View(pokemonResult);
-            }
+            return View(pokemonResult);
         }
 
         public ActionResult About()

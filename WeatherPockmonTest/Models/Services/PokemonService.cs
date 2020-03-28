@@ -12,25 +12,30 @@ namespace WeatherPockmonTest.Models
 {
     public class PokemonService
     {
-
         private string lastPockemonUsed = string.Empty;
 
         private readonly string appIdNumber = "a8bb6de7c0b7852044690af83e8537b0";
+  
         public async Task<PokemonInfo> LookUpPokemon(string city)
         {
+            try
+            {
+                PokemonInfo pokemonInfo = new PokemonInfo();
 
-            PokemonInfo pokemonInfo = new PokemonInfo();
+                pokemonInfo.LookUpCity = city;
 
-            pokemonInfo.LookUpCity = city;
+                await SetTemperatureAndStatusAsync(pokemonInfo);
 
-            await SetTemperatureAndStatusAsync(pokemonInfo);
+                SetPokemonType(pokemonInfo);
 
-            SetPokemonType(pokemonInfo);
+                await SetPokemonAsync(pokemonInfo);
 
-            await SetPokemonAsync( pokemonInfo);
-
-            return pokemonInfo;
-
+                return pokemonInfo;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         private void SetPokemonType(PokemonInfo pokemonInfo)
@@ -39,41 +44,41 @@ namespace WeatherPockmonTest.Models
 
             pokemonInfo.CityStatus = pokemonInfo.CityStatus == "Rain" ? "rainning" : "not rainning";
 
-            if (pokemonInfo.CityStatus == "rainning")
+            if (pokemonInfo.CityStatus == PokemonType.Electric)
             {
-                pokemonInfo.Type = "electric";
+                pokemonInfo.Type = PokemonType.Electric;
             }
             else if (temperature < 5)
             {
-                pokemonInfo.Type = "ice";
+                pokemonInfo.Type = PokemonType.Ice;
             }
             else if (temperature >= 5 && temperature < 10)
             {
-                pokemonInfo.Type = "water";
+                pokemonInfo.Type = PokemonType.Water;
             }
             else if (temperature >= 12 && temperature < 15)
             {
-                pokemonInfo.Type = "grass";
+                pokemonInfo.Type = PokemonType.Grass;
             }
-            else if (temperature >= 15 && temperature <= 21)
+            else if (temperature >= 15 && temperature < 21)
             {
-                pokemonInfo.Type = "ground";
+                pokemonInfo.Type = PokemonType.Ground;
             }
-            else if (temperature >= 23 && temperature <= 27)
+            else if (temperature >= 23 && temperature < 27)
             {
-                pokemonInfo.Type = "bug";
+                pokemonInfo.Type = PokemonType.Bug;
             }
             else if (temperature >= 27 && temperature <= 33)
             {
-                pokemonInfo.Type = "rock";
+                pokemonInfo.Type = PokemonType.Rock;
             }
             else if (temperature > 33)
             {
-                pokemonInfo.Type = "fire";
+                pokemonInfo.Type = PokemonType.Fire;
             }
             else
             {
-                pokemonInfo.Type = "normal";
+                pokemonInfo.Type = PokemonType.Normal;
             }
         }
 
@@ -96,9 +101,7 @@ namespace WeatherPockmonTest.Models
                 }
                 catch (HttpRequestException httpRequestException)
                 {
-                    var error = httpRequestException.Message;
-
-                    // ModelState.AddModelError("Error", $"Error getting weather from OpenWeather: {httpRequestException.Message}");
+                    throw new Exception(httpRequestException.Message);
                 }
             }
         }
@@ -119,9 +122,7 @@ namespace WeatherPockmonTest.Models
                 }
                 catch (HttpRequestException httpRequestException)
                 {
-                    var error = httpRequestException.Message;
-
-                    // ModelState.AddModelError("Error", $"Error getting weather from OpenWeather: {httpRequestException.Message}");
+                    throw new Exception(httpRequestException.Message);
                 }
             }
         }
