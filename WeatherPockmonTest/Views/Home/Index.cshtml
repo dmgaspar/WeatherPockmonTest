@@ -10,14 +10,11 @@
         <div>
             @using (Html.BeginForm("LookupPokemon", "Home", FormMethod.Post))
             {
+                @Html.AntiForgeryToken()
 
                 <input id="LookUpCity" type="text" width="70" name="LookUpCity" />
 
-                @Html.ValidationMessageFor(m => m.LookUpCity)
-
                 <input type="submit" value="Lookup Pokemon" class="btn btn-primary">
-
-
             }
         </div>
 
